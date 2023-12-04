@@ -20,7 +20,7 @@
     }
 }
 
-internal class ElfPair
+class ElfPair
 {
     public Range First { get; set; }
     public Range Second { get; set; }
@@ -31,7 +31,7 @@ internal class ElfPair
         Second = second;
     }
 
-    internal static ElfPair Parse(string line)
+    public static ElfPair Parse(string line)
     {
         // Parse lines like
         // 2-4,6-8
@@ -44,7 +44,7 @@ internal class ElfPair
     }
 }
 
-internal class Program
+class Program
 {
     private static void Main(string[] args)
     {
