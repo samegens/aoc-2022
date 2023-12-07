@@ -21,7 +21,8 @@ public class RangeTests
     [TestCase(1, 5, 2, 6, false)]
     [TestCase(2, 4, 1, 5, false)]
     [TestCase(1, 3, 5, 6, false)]
-    public void TestContainsWithTestCase(int range1Start, int range1End, int range2Start, int range2End, bool expectedResult)
+    public void TestContainsWithTestCase(int range1Start, int range1End,
+        int range2Start, int range2End, bool expectedResult)
     {
         // Arrange
         Range range1 = new(start: range1Start, end: range1End);
