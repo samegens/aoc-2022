@@ -1,4 +1,4 @@
-namespace Solver.Tests;
+namespace SolverTests;
 
 public class MoveTests
 {

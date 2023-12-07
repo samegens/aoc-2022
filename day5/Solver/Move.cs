@@ -1,3 +1,5 @@
+namespace AoC;
+
 public class Move
 {
     public int Count { get; private set; }

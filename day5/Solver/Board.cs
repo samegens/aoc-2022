@@ -1,3 +1,4 @@
+namespace AoC;
 
 public class Board
 {
