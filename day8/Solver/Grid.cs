@@ -1,10 +1,16 @@
-
 namespace AoC;
 
 public class Grid
 {
     private readonly byte[,] _cells;
     private readonly bool[,] _isCellVisible;
+
+    public int Width { get; }
+
+    public int Height { get; }
+
+    public byte this[int x, int y] => _cells[x, y];
+
 
     public Grid(string[] lines)
     {
@@ -13,11 +19,36 @@ public class Grid
 
         _cells = new byte[Width, Height];
         _isCellVisible = new bool[Width, Height];
+        ForEachPosition((x, y) => _cells[x, y] = CharNumberToByte(lines[y][x]));
+    }
+
+    /// <summary>
+    /// Applies an action (lamda) to each position in the grid.
+    /// </summary>
+    public void ForEachPosition(Action<int, int> action)
+    {
         for (int y = 0; y < Height; y++)
         {
             for (int x = 0; x < Width; x++)
             {
-                _cells[x, y] = CharNumberToByte(lines[y][x]);
+                action(x, y);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns a sequence (IEnumerable) with the positions of each cell.
+    /// </summary>
+    public IEnumerable<(int x, int y)> Positions
+    {
+        get
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    yield return (x, y);
+                }
             }
         }
     }
@@ -60,22 +91,8 @@ public class Grid
 
     public int GetHighestScenicScore()
     {
-        int highestScore = int.MinValue;
-        for (int y = 0; y < Height; y++)
-        {
-            for (int x = 0; x < Width; x++)
-            {
-                highestScore = Math.Max(highestScore, GetScenicScoreFor(x, y));
-            }
-        }
-        return highestScore;
+        return Positions.Select(pos => GetScenicScoreFor(pos.x, pos.y)).Max();
     }
-
-    public int Width { get; }
-
-    public int Height { get; }
-
-    public byte this[int x, int y] => _cells[x, y];
 
     private static byte CharNumberToByte(char ch)
     {
@@ -118,17 +135,6 @@ public class Grid
 
     private int GetNrVisibleCells()
     {
-        int nrVisible = 0;
-        for (int y = 0; y < Height; y++)
-        {
-            for (int x = 0; x < Width; x++)
-            {
-                if (_isCellVisible[x, y])
-                {
-                    nrVisible++;
-                }
-            }
-        }
-        return nrVisible;
+        return Positions.Where(pos => _isCellVisible[pos.x, pos.y]).Count();
     }
 }
