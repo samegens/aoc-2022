@@ -91,13 +91,13 @@ public class SensorTests
     [TestCase(0, 1, true)]
     [TestCase(0, 2, false)]
     [TestCase(0, 3, false)]
-    public void TestIsPointWithinRange(int x, int y, bool expected)
+    public void TestIsCovering(int x, int y, bool expected)
     {
         // Arrange
         Sensor sut = new(new Point(0, 0), new Point(1, 0));
 
         // Act
-        bool actual = sut.IsPointWithinRange(new Point(x, y));
+        bool actual = sut.IsCovering(new Point(x, y));
 
         // Assert
         Assert.That(actual, Is.EqualTo(expected));

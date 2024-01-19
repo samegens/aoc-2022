@@ -25,7 +25,7 @@ public class Solver
             // 10              #
             //  9             ###
             //  8              #
-            // Then the deltaY is 1. We have to add that to the startX (8 => 9) and subtract it from the enX (10 => 9).
+            // Then the deltaY is 1. We have to add that to the startX (8 => 9) and subtract it from the endX (10 => 9).
             int deltaY = Math.Abs(y - sensor.Location.Y);
             int startX = sensor.Location.X - sensor.ManhattanRadius + deltaY;
             int endX = sensor.Location.X + sensor.ManhattanRadius - deltaY;
@@ -47,30 +47,59 @@ public class Solver
 
     public long SolvePart2(int range)
     {
+        // What we're doing here is scanning the edges of all sensor areas and checking if:
+        // - the point is within the specified square area,
+        // - the point is not within range of any sensor.
+        // To optimize this we remember the last sensor that had the point in range, since
+        // there's a large chance that the current point is also in range of the same sensor.
         for (int i = 0; i < Sensors.Count; i++)
         {
             Sensor sensor = Sensors[i];
-            IEnumerable<Point> eligiblePoints = sensor.EdgePoints.Where(l => l.X >= 0 && l.X <= range && l.Y >= 0 && l.Y <= range);
+            IEnumerable<Point> eligiblePoints = from p in sensor.EdgePoints
+                                                where p.X >= 0 && p.X <= range && p.Y >= 0 && p.Y <= range
+                                                select p;
+
+            int lastSensorInRange = -1;
             foreach (Point p in eligiblePoints)
             {
-                bool isPossiblePosition = true;
-                for (int j = 0; j < Sensors.Count; j++)
+                if (lastSensorInRange >= 0)
                 {
-                    if (i == j) continue;
-                    Sensor otherSensor = Sensors[j];
-                    if (otherSensor.IsPointWithinRange(p))
+                    // First check if the point is covered by the last sensor.
+                    if (Sensors[lastSensorInRange].IsCovering(p))
                     {
-                        isPossiblePosition = false;
-                        break;
+                        continue;
                     }
                 }
-                if (isPossiblePosition)
+
+                // Find the sensor that is covering the point, if any.
+                lastSensorInRange = FindSensorThatCovers(p);
+                if (lastSensorInRange < 0)
                 {
-                    return p.X * 4000000L + p.Y;
+                    // No sensor is covering the point, we found our beacon!
+                    return GetTuningFrequencyForPoint(p);
                 }
             }
         }
+
         return 0;
+    }
+
+    private int FindSensorThatCovers(Point p)
+    {
+        for (int i = 0; i < Sensors.Count; i++)
+        {
+            if (Sensors[i].IsCovering(p))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private static long GetTuningFrequencyForPoint(Point p)
+    {
+        return p.X * 4000000L + p.Y;
     }
 
     public void Print(int range)
@@ -80,7 +109,7 @@ public class Solver
             for (int x = 0; x <= range; x++)
             {
                 Point p = new(x, y);
-                var sensors = Sensors.Where(s => s.IsPointWithinRange(p));
+                var sensors = Sensors.Where(s => s.IsCovering(p));
                 if (sensors.Any())
                 {
                     int i = Sensors.IndexOf(sensors.First());

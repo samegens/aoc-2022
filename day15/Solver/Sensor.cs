@@ -69,7 +69,7 @@ public class Sensor
         return Location.GetManhattanDistanceTo(point) == ManhattanRadius + 1;
     }
 
-    public bool IsPointWithinRange(Point point)
+    public bool IsCovering(Point point)
     {
         return Location.GetManhattanDistanceTo(point) <= ManhattanRadius;
     }
