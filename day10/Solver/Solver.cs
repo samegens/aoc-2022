@@ -25,4 +25,16 @@ public class Solver
                state.GetSignalStrengthAt(180) +
                state.GetSignalStrengthAt(220);
     }
+
+    public string SolvePart2()
+    {
+        IEnumerable<Instruction> instructions = Lines.Select(Instruction.Parse);
+        State state = new();
+        foreach (Instruction instruction in instructions)
+        {
+            instruction.ExecuteOn(state);
+        }
+
+        return state.GetCrt();
+    }
 }

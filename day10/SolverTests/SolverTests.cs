@@ -2,11 +2,7 @@ namespace SolverTests;
 
 public class SolverTests
 {
-    [Test]
-    public void TestSolvePart1()
-    {
-        // Arrange
-        string[] lines = @"addx 15
+    private static readonly string[] Lines = @"addx 15
 addx -11
 addx 6
 addx -3
@@ -153,12 +149,37 @@ noop
 noop
 noop
 ".Split('\n');
-        Solver solver = new(lines);
+
+    [Test]
+    public void TestSolvePart1()
+    {
+        // Arrange
+        Solver solver = new(Lines);
 
         // Act
         int actual = solver.SolvePart1();
 
         // Assert
         Assert.That(actual, Is.EqualTo(13140));
+    }
+
+    [Test]
+    public void TestSolvePart2()
+    {
+        // Arrange
+        Solver solver = new(Lines);
+        string expected = @"##..##..##..##..##..##..##..##..##..##..
+###...###...###...###...###...###...###.
+####....####....####....####....####....
+#####.....#####.....#####.....#####.....
+######......######......######......####
+#######.......#######.......#######.....
+";
+
+        // Act
+        string actual = solver.SolvePart2();
+
+        // Assert
+        Assert.That(actual, Is.EqualTo(expected));
     }
 }
